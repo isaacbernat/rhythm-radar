@@ -1,0 +1,18 @@
+body {
+  background: #222;
+  margin: auto;
+  width: 960px;
+}
+
+.bodies path {
+  stroke: none;
+}
+
+.bodies .text-path {
+  stroke: none;
+}
+
+.bodies text {
+  fill: #FFF;
+  font: 500 16px "Helvetica Neue";
+}
