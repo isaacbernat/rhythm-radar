@@ -1,0 +1,63 @@
+<style>
+body {
+	margin: 30px 30px 30px 30px;
+}
+
+</style>
+
+<h1>About the Groove Scribe</h2>
+
+The Groove Scribe was built to help drummers create, practice and share grooves.
+	<ul>
+    <li>A simple interface allows easy groove creation that automatically creates printable sheet music for printing and sharing.
+    <li>Midi playback with tempo and a metronome makes it easy to hear and practice difficult grooves.
+    <li>Sharing is simple with a URL and the recipient can view the groove in any web browser.  
+	</ul>
+	
+<p>
+<b>How it works:</b> 
+<p>
+The Groove Scribe is written in HTML and Javascript and runs entirely in the browser.   
+<a href="http://abcnotation.com/">ABC Notation</a> is used to create the printable sheet music.
+When notes are changed on the screen, new ABC Notation is generated which creates the sheet music.
+To play the music, Groove Scribe generates a <a href="http://en.wikipedia.org/wiki/MIDI">MIDI</a> file and plays it using the 
+browser audio interface.   The soundfont used by the midi player uses custom drum samples from <A Href="http://mikeslessons.com/">Mike Johnston's</a> kits.
+<p>
+All of the icons and images used by and created by the Groove Scribe are SVG or fonts so the interface scales to any resolution with no scaling artifacts.
+Try zooming in on the page to check it out.
+<p>
+<b>How it swings:</b>
+<p>
+The swing slider controls the amount of "swing" that is added to the playback.   
+It does not effect the printable sheet music.   To generate swing, a delay is added to the upbeat notes in the measure.  
+The upbeat notes are the "a" and the "e" in a 16th note groove. (1e&a), and are the "&" notes in a 8th note groove.  (1&2&3&4&).    
+During MIDI generation, the program extends the duration of the downbeat notes and shortens the duration of the upbeat notes.
+The percentage of the swing controls the percentage of the note duration that the upbeat is delayed. 
+(NewDelay = NormalDelay + (NormalDelay * SwingPercentage)
+
+
+<h3>People: </h3>
+<ul>
+<li><A Href="http://www.montulli.org/lou/">Lou Montulli</a> -- The programmer.
+<li><A Href="http://mikeslessons.com/">Mike Johnston</a> -- The inspiration for this app.  Major feature and design collaborator.     
+<li><A Href="http://www.bradfilip.com/">Brad Filip</a> -- Graphic design.
+</ul>
+
+<h3>Open Source release</h3>
+<ul>
+<li>Groove Scribe is open source and is licensed under the <a href="http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html">GPL v2.0</a>.  
+ The source code is available at <a href=""https://github.com/montulli/GrooveScribe">GitHub</a>.
+</ul>
+
+<p>
+<b>The following packages or technologies are used in this project:</b>
+<ul>
+	<li>abc2svg.js: <a href="http://moinejf.free.fr/js/">http://moinejf.free.fr/js/</a>  Amazing product.  Groove Scribe could not exist without it.  Thank you Jef!
+	<li>Midi.js: <a href="http://mudcu.be/midi-js/">http://mudcu.be/midi-js/</a>
+	<li>Share this: <a href="https://github.com/carrot/share-button">https://github.com/carrot/share-button</a>
+	<li>Abc Notation: <a href="http://abcnotation.com/">http://abcnotation.com/</a>
+	<li>jsmidgen: <a href="https://github.com/dingram/jsmidgen">https://github.com/dingram/jsmidgen</a>
+	<li>Font Awesome: <a href="http://fortawesome.github.io/Font-Awesome/">http://fortawesome.github.io/Font-Awesome/</a>
+	<li>Google URL Shortener: <a href="https://goo.gl/">https://goo.gl/</a>
+	<li>HTML5: Mozilla.org, W3C.org, Google.com, et al.  <a href="http://en.wikipedia.org/wiki/HTML5">http://en.wikipedia.org/wiki/HTML5</a>
+</ul>
