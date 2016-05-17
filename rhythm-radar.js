@@ -53,8 +53,8 @@ body.append("path")
     });
 
 // set up callbacks
-var resetTime = d3.now();
-d3.timer(tick);
+var resetTime = Date.now();
+setImmediate(tick);
 myGrooveWriter.myGrooveUtils.noteCallback = beat;
 myGrooveWriter.myGrooveUtils.playEventCallback = resetRadar;
 
@@ -64,7 +64,7 @@ function updateTimeSignature() {  // callback from timeSigPopupClose
 }
 
 function tick(elapsed) {
-  var now = d3.now() - resetTime;
+  var now = Date.now() - resetTime;
   instruments.forEach(function(d) {
     const start = d3.timeMinute(now),
           end = d3.timeMinute.offset(start, 1);
@@ -73,6 +73,7 @@ function tick(elapsed) {
   body
       .style("fill", function(d, i) { return "url(#gradient" + i + ")"; })
       .attr("transform", function(d) { return "rotate(" + d.angle + ")"; });
+  setImmediate(tick);
 }
 
 function beat(note_type) {
@@ -129,5 +130,5 @@ function updateAngleConstants() {
 }
 
 function resetRadar(){
-  resetTime = d3.now();
+  resetTime = Date.now();
 }
