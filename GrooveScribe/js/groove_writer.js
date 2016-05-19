@@ -3806,7 +3806,9 @@ function GrooveWriter() { "use strict";
 				class_notes_per_measure = new_notes_per_measure;
 			root.changeDivision(class_time_division);   // use this function because it will relayout everything
 		}
-		callback();
+		if (callback) {
+			callback();
+		}
 	};
 
 	root.updateRangeLabel = function (event, idToUpdate) {

@@ -13,6 +13,7 @@ const svg = d3.select("#rhythm-radar"),
                    {"name": "snare"},
                    {"name": "kick"},
                    {"name": "tom"}],
+    fadeoutTime = 0,
     timeInfo = getTimeInfo(),
     color = d3.scaleWarm().domain([0, instruments.length]);
 
@@ -53,8 +54,10 @@ body.append("path")
     });
 
 // set up callbacks
-d3.timer(tick);
+var resetTime = Date.now();
+setImmediate(tick);
 myGrooveWriter.myGrooveUtils.noteCallback = beat;
+myGrooveWriter.myGrooveUtils.playEventCallback = resetRadar;
 
 function updateTimeSignature() {  // callback from timeSigPopupClose
   timeInfo.signature = getTimeInfo().signature;
@@ -62,7 +65,7 @@ function updateTimeSignature() {  // callback from timeSigPopupClose
 }
 
 function tick(elapsed) {
-  var now = d3.now();
+  var now = Date.now() - resetTime;
   instruments.forEach(function(d) {
     const start = d3.timeMinute(now),
           end = d3.timeMinute.offset(start, 1);
@@ -71,6 +74,7 @@ function tick(elapsed) {
   body
       .style("fill", function(d, i) { return "url(#gradient" + i + ")"; })
       .attr("transform", function(d) { return "rotate(" + d.angle + ")"; });
+  setImmediate(tick);
 }
 
 function beat(note_type) {
@@ -80,17 +84,32 @@ function beat(note_type) {
     updateAngleConstants();
   }
   const id = "id" + d3.now().toString().replace(".", "");
-  var ss = ri.inner + (2 + i) * (ri.outer - ri.inner)/(instruments.length -1) * radius;
+  const height = ri.inner + (2 + i) * (ri.outer - ri.inner)/(instruments.length -1) * radius;
+  const angle = instruments[i].angle;
   const dot = d3.select("g").append("circle")
-    .attr("cy", -ss)
+    .attr("cy", -height)
     .attr("cx", 0)
     .attr("r", dotRadius)
     .attr("id", id)
     .style("fill", d3.color(color(i)))
-    .attr("transform", function(d) { return "rotate(" + instruments[i].angle + ")"; });
+    .attr("transform", function(d) { return "rotate(" + angle + ")"; });
   const fadeoutTime = (60000/timeInfo.BPM * timeInfo.signature[0]/timeInfo.signature[1] * 4 * 1.5);
   dot.style("opacity", 1)
     .transition().duration(fadeoutTime).style("opacity", 0).remove();
+  connectBeat(i, dot, fadeoutTime)
+}
+
+function connectBeat(index, dot, fadeoutTime) {
+  const oldDot = instruments[index].lastBeat;
+  if (oldDot) {
+    d3.select("g").append('svg:path')
+    .attr('d', lineFunc([rotate(dot), rotate(oldDot)]))
+    .attr('stroke', d3.color(color(index)))
+    .attr('stroke-width', dotRadius/2)
+    .style("opacity", 0.66)
+    .transition().duration(fadeoutTime).style("opacity", 0).remove();
+  }
+  instruments[index].lastBeat = dot;
 }
 
 // utils
@@ -121,7 +140,33 @@ function getTimeInfo() {
 }
 
 function updateAngleConstants() {
+  TI = timeInfo;
+  fadeoutTime = (60000/TI.BPM * TI.signature[0]/TI.signature[1] * 4 * 1.5);
   instruments.forEach(function(d){
-    d.angleConstant = (timeInfo.BPM/(timeInfo.signature[0]/timeInfo.signature[1] * 4) * 360.0);
+    d.angleConstant = (TI.BPM/(TI.signature[0]/TI.signature[1] * 4) * 360.0);
   });
+}
+
+function resetRadar(){
+  resetTime = Date.now();
+}
+
+const lineFunc = d3.line()
+.x(function(d) {
+  return d.x;
+})
+.y(function(d) {
+  return d.y;
+});
+
+function rotate(dot) {
+    const angle = new RegExp("[0-9]+\.?[0-9]*").exec(dot.attr("transform"))[0].split(")")[0];  // FIXME: less ugly code
+    const radians = (pi / 180) * -angle,
+        x = dot.attr("cx")
+        y = dot.attr("cy")
+        cos = Math.cos(radians),
+        sin = Math.sin(radians),
+        nx = (cos * x) + (sin * y),
+        ny = (cos * y) - (sin * x);
+    return {"x": nx, "y": ny};
 }
