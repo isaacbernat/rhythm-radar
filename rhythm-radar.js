@@ -58,6 +58,7 @@ var resetTime = Date.now();
 setImmediate(tick);
 myGrooveWriter.myGrooveUtils.noteCallback = beat;
 myGrooveWriter.myGrooveUtils.playEventCallback = resetRadar;
+myGrooveWriter.myGrooveUtils.repeatCallback = resetRadar;
 
 function updateTimeSignature() {  // callback from timeSigPopupClose
   timeInfo.signature = getTimeInfo().signature;
