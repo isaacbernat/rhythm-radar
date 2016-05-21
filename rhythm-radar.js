@@ -32,6 +32,7 @@ svg.append("defs");
 instruments.forEach(function(d, i) {
   calculateGradient(i);
 });
+svg.attr('viewBox', '-500 -500 1300 1300');
 
 const arcBody = d3.arc()
     .startAngle(0)
@@ -40,8 +41,6 @@ const arcBody = d3.arc()
     .outerRadius(function(d) { return d.radius + bodyRadius; });
 
 const g = svg.append("g")
-    .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
-
 const body = g.append("g")
     .attr("class", "bodies")
   .selectAll("g")
@@ -53,12 +52,14 @@ body.append("path")
       return arcBody(d);
     });
 
+resize();
 // set up callbacks
 var resetTime = Date.now();
 setImmediate(tick);
 myGrooveWriter.myGrooveUtils.noteCallback = beat;
 myGrooveWriter.myGrooveUtils.playEventCallback = resetRadar;
 myGrooveWriter.myGrooveUtils.repeatCallback = resetRadar;
+window.addEventListener('resize', resize);
 
 function updateTimeSignature() {  // callback from timeSigPopupClose
   timeInfo.signature = getTimeInfo().signature;
@@ -111,6 +112,15 @@ function connectBeat(index, dot, fadeoutTime) {
     .transition().duration(fadeoutTime).style("opacity", 0).remove();
   }
   instruments[index].lastBeat = dot;
+}
+
+function resize() {
+  const w = document.body.clientWidth;
+  const h = document.body.clientHeight;
+  const smallest = Math.min(h, w);
+  const ratio = smallest / 700.0;
+  var move = 30 - (700.0 - smallest)/2;
+  g.attr("transform", "translate(" + move + " " + move + ") scale(" + ratio +  ")")
 }
 
 // utils
